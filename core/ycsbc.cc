@@ -118,7 +118,7 @@ int main(const int argc, const char *argv[]) {
 
   // print status periodically
   const bool show_status = (props.GetProperty("status", "false") == "true");
-  const int status_interval = std::stoi(props.GetProperty("status.interval", "10"));
+  const int status_interval = std::stoi(props.GetProperty("status.interval", "1"));
 
   // load phase
   if (do_load) {

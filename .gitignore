@@ -8,3 +8,9 @@ tags
 compile_commands.json
 .clangd/
 .cache/
+
+.idea/
+build/
+build
+cmake-build-debug
+cmake-build-release
