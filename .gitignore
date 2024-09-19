@@ -1,4 +1,6 @@
 rocksdb_test_tmp/
+.vscode/
+HdrHistogram_c
 *.o
 *.d
 
