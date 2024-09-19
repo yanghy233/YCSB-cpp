@@ -113,6 +113,9 @@ namespace {
 
 namespace ycsbc {
 
+const std::string ram_path="/home/yanghy/ramdisk";
+const std::string disk_path="./rocksdb_test_tmp";
+
 std::vector<rocksdb::ColumnFamilyHandle *> RocksdbDB::cf_handles_;
 rocksdb::DB *RocksdbDB::db_ = nullptr;
 int RocksdbDB::ref_cnt_ = 0;
@@ -188,7 +191,8 @@ void RocksdbDB::Init() {
     return;
   }
 
-  const std::string &db_path = props.GetProperty(PROP_NAME, PROP_NAME_DEFAULT);
+//   const std::string &db_path = props.GetProperty(PROP_NAME, PROP_NAME_DEFAULT);
+  const std::string &db_path = disk_path;
   if (db_path == "") {
     throw utils::Exception("RocksDB db path is missing");
   }
@@ -238,13 +242,19 @@ void RocksdbDB::GetOptions(const utils::Properties &props, rocksdb::Options *opt
   std::string fs_uri = props.GetProperty(PROP_FS_URI, PROP_FS_URI_DEFAULT);
   rocksdb::Env* env =  rocksdb::Env::Default();;
   if (!env_uri.empty() || !fs_uri.empty()) {
-    rocksdb::Status s = rocksdb::Env::CreateFromUri(rocksdb::ConfigOptions(),
-                                                    env_uri, fs_uri, &env, &env_guard);
-    if (!s.ok()) {
-      throw utils::Exception(std::string("RocksDB CreateFromUri: ") + s.ToString());
-    }
-    opt->env = env;
+    
+    throw utils::Exception(std::string("Rocksdb Failed. @yhy \n"));
+    //rocksdb::Status s = rocksdb::Env::CreateFromUri(rocksdb::ConfigOptions(),
+    //                                                env_uri, fs_uri, &env, &env_guard);
+    //if (!s.ok()) {
+    //  throw utils::Exception(std::string("RocksDB CreateFromUri: ") + s.ToString());
+    //}
+    //opt->env = env;
   }
+
+    // options.level0_file_num_compaction_trigger = 1;
+    opt->db_paths.emplace_back(ram_path,2ull<<30);
+    opt->db_paths.emplace_back(disk_path,1ull<<40);
 
   const std::string options_file = props.GetProperty(PROP_OPTIONS_FILE, PROP_OPTIONS_FILE_DEFAULT);
   if (options_file != "") {
